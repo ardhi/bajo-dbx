@@ -1,0 +1,38 @@
+{
+  "name": "bajo-dbx",
+  "version": "0.3.0",
+  "description": "Bajo DB Extra Tools/Utility",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ardhi/bajo-dbx.git"
+  },
+  "keywords": [
+    "extra",
+    "db",
+    "driver",
+    "bajo",
+    "framework",
+    "modular"
+  ],
+  "author": "Ardhi Lukianto <ardhi@lukianto.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ardhi/bajo-dbx/issues"
+  },
+  "homepage": "https://github.com/ardhi/bajo-dbx#readme",
+  "dependencies": {
+    "@atomictech/xlsx-write-stream": "^2.0.2",
+    "fast-csv": "^5.0.1",
+    "fast-jwt": "^3.2.0",
+    "ndjson": "^2.0.0",
+    "scramjet": "^4.36.9",
+    "stream-chain": "^2.2.5",
+    "stream-json": "^1.8.0",
+    "xlsx-parse-stream": "^1.1.0"
+  }
+}
