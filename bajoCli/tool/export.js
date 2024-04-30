@@ -14,7 +14,7 @@ async function exportTo ({ path, args }) {
   const { importPkg, print, dayjs, getConfig, spinner, startPlugin } = this.bajo.helper
   const { isEmpty, map } = this.bajo.helper._
   const [input, select] = await importPkg('bajoCli:@inquirer/input',
-    'bajo-cli:@inquirer/select')
+    'bajoCli:@inquirer/select')
   const config = getConfig()
   if (!this.bajoDb) return print.fail('Bajo DB isn\'t loaded', { exit: config.tool })
   const schemas = map(this.bajoDb.schemas, 'name')
