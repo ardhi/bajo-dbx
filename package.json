@@ -1,6 +1,6 @@
 {
   "name": "bajo-dbx",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Bajo DB Extra Tools/Utility",
   "main": "index.js",
   "scripts": {
