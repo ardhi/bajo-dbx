@@ -8,32 +8,30 @@ const { DataStream } = scramjet
 const { json, ndjson, csv, xlsx } = format
 
 async function importFrom (source, dest, { trashOld = true, batch = 1, progressFn, converterFn, useHeader = true, fileType, createOpts = {} } = {}, opts = {}) {
-  const { fs, error, getConfig, getPluginDataDir } = this.bajo.helper
-  if (dest !== false) {
-    if (!this.bajoDb) throw error('Bajo DB isn\'t loaded')
-    await this.bajoDb.helper.getInfo(dest)
-  }
-  const { merge } = this.bajo.helper._
-  const cfg = getConfig('bajoDbx')
+  const { getPluginDataDir } = this.app.bajo
+  const { recordCreate } = this.app.bajoDb
+  const { merge } = this.app.bajo.lib._
+  const { fs } = this.app.bajo.lib
 
+  if (dest !== false) this.app.bajoDb.getInfo(dest) // make sure dest coll is valid
   let file
   if (path.isAbsolute(source)) file = source
   else {
-    file = `${getPluginDataDir('bajoDbx')}/import/${source}`
+    file = `${getPluginDataDir(this.name)}/import/${source}`
     fs.ensureDirSync(path.dirname(file))
   }
-  if (!fs.existsSync(file)) throw error('Source file \'%s\' doesn\'t exist', file)
+  if (!fs.existsSync(file)) throw this.error('Source file \'%s\' doesn\'t exist', file)
   let ext = fileType ? `.${fileType}` : path.extname(file)
   let decompress = false
   if (ext === '.gz') {
     ext = path.extname(path.basename(file, '.gz'))
     decompress = true
   }
-  if (!supportedExt.includes(ext)) throw error('Unsupported format \'%s\'', ext.slice(1))
-  if (trashOld && dest !== false) await this.bajoDb.helper.collClear(dest)
+  if (!supportedExt.includes(ext)) throw this.error('Unsupported format \'%s\'', ext.slice(1))
+  if (trashOld && dest !== false) await this.app.bajoDb.collClear(dest)
   const reader = fs.createReadStream(file)
   batch = parseInt(batch) || 100
-  if (batch > cfg.import.maxBatch) batch = cfg.import.maxBatch
+  if (batch > this.config.import.maxBatch) batch = this.config.import.maxBatch
   if (batch < 0) batch = 1
   let count = 0
   const pipes = [reader]
@@ -55,7 +53,7 @@ async function importFrom (source, dest, { trashOld = true, batch = 1, progressF
       for (let item of items) {
         count++
         item = converterFn ? await converterFn.call(this, item) : item
-        if (dest !== false) await this.bajoDb.helper.recordCreate(dest, item, createOpts)
+        if (dest !== false) await recordCreate(dest, item, createOpts)
         else data.push(item)
       }
       if (progressFn) await progressFn.call(this, { batchNo, data: items, batchStart, batchEnd: new Date() })

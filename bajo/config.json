@@ -16,5 +16,5 @@
     "checkInterval": false,
     "runEarly": true
   },
-  "dependencies": ["bajo-db"]
+  "dependencies": ["bajo-db", "bajo-extra"]
 }

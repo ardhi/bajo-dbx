@@ -8,19 +8,20 @@ const { DataStream } = scramjet
 const { json, ndjson, csv, xlsx } = format
 
 async function getFile (dest, ensureDir) {
-  const { fs, importPkg, error, getPluginDataDir } = this.bajo.helper
+  const { importPkg, getPluginDataDir } = this.app.bajo
+  const { fs } = this.app.bajo.lib
   const increment = await importPkg('add-filename-increment')
   let file
   if (path.isAbsolute(dest)) file = dest
   else {
-    file = `${getPluginDataDir('bajoDbx')}/export/${dest}`
+    file = `${getPluginDataDir(this.name)}/export/${dest}`
     fs.ensureDirSync(path.dirname(file))
   }
   file = increment(file, { fs: true })
   const dir = path.dirname(file)
   if (!fs.existsSync(dir)) {
     if (ensureDir) fs.ensureDirSync(dir)
-    else throw error('Directory \'%s\' doesn\'t exist', dir)
+    else throw this.error('Directory \'%s\' doesn\'t exist', dir)
   }
   let compress = false
   let ext = path.extname(file)
@@ -29,13 +30,13 @@ async function getFile (dest, ensureDir) {
     ext = path.extname(path.basename(file).replace('.gz', ''))
     // file = file.slice(0, file.length - 3)
   }
-  if (!supportedExt.includes(ext)) throw error('Unsupported format \'%s\'', ext.slice(1))
+  if (!supportedExt.includes(ext)) throw this.error('Unsupported format \'%s\'', ext.slice(1))
   return { file, ext, compress }
 }
 
 async function getData ({ source, filter, count, stream, progressFn }) {
   let cnt = count ?? 0
-  const { recordFind } = this.bajoDb.helper
+  const { recordFind } = this.app.bajoDb
   for (;;) {
     const batchStart = new Date()
     const { data, page } = await recordFind(source, filter, { dataOnly: false })
@@ -50,18 +51,17 @@ async function getData ({ source, filter, count, stream, progressFn }) {
 }
 
 function exportTo (source, dest, { filter = {}, ensureDir, useHeader = true, batch = 500, progressFn } = {}, opts = {}) {
-  const { fs, error, getConfig } = this.bajo.helper
-  const cfg = getConfig('bajoDbx')
-  if (!this.bajoDb) throw error('Bajo DB isn\'t loaded')
+  const { fs } = this.app.bajo.lib
+  const { merge } = this.app.bajo.lib._
+
   filter.page = 1
   batch = parseInt(batch) ?? 500
-  if (batch > cfg.export.maxBatch) batch = cfg.export.maxBatch
+  if (batch > this.config.export.maxBatch) batch = this.config.export.maxBatch
   if (batch < 0) batch = 1
   filter.limit = batch
-  const { merge } = this.bajo.helper._
 
   return new Promise((resolve, reject) => {
-    const { getInfo } = this.bajoDb.helper
+    const { getInfo } = this.app.bajoDb
     let count = 0
     let file
     let ext

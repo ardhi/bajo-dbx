@@ -1,17 +1,14 @@
 async function start () {
-  const { getConfig, log } = this.bajo.helper
-  const { archive } = this.bajoDbx.helper
-  const cfg = getConfig('bajoDbx')
-  if (cfg.archive.checkInterval === false || cfg.archive.checkInterval <= 0) {
-    log.warn('Automatic archive is disabled')
+  if (this.config.archive.checkInterval === false || this.config.archive.checkInterval <= 0) {
+    this.log.warn('Automatic archiving is disabled')
     return
   }
-  if (cfg.archive.runEarly) await archive()
-  this.bajoDbx.archiveIntv = setInterval(() => {
-    archive().then().catch(err => {
-      log.error('Archive error: %s', err.message)
+  if (this.config.archive.runEarly) await this.archive()
+  this.archiveIntv = setInterval(() => {
+    this.archive().then().catch(err => {
+      this.log.error('Archive error: %s', err.message)
     })
-  }, cfg.archive.checkInterval * 60 * 1000)
+  }, this.config.archive.checkInterval * 60 * 1000)
 }
 
 export default start
