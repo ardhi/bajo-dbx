@@ -1,7 +1,7 @@
 async function move (task) {
   const { importPkg } = this.app.bajo
-  const { dayjs } = this.app.bajo.lib
-  const { set } = this.app.bajo.lib._
+  const { dayjs } = this.lib
+  const { set } = this.lib._
   const { formatInteger } = this.app.bajoExtra
   const { recordFind, recordCreate, recordRemove, statAggregate } = this.app.bajoDb
   const prompts = await importPkg('bajoCli:@inquirer/prompts')

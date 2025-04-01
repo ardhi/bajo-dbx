@@ -9,7 +9,7 @@ const { json, ndjson, csv, xlsx } = format
 
 async function getFile (dest, ensureDir) {
   const { importPkg, getPluginDataDir } = this.app.bajo
-  const { fs } = this.app.bajo.lib
+  const { fs } = this.lib
   const increment = await importPkg('add-filename-increment')
   let file
   if (path.isAbsolute(dest)) file = dest
@@ -51,8 +51,8 @@ async function getData ({ source, filter, count, stream, progressFn }) {
 }
 
 function exportTo (source, dest, { filter = {}, ensureDir, useHeader = true, batch = 500, progressFn } = {}, opts = {}) {
-  const { fs } = this.app.bajo.lib
-  const { merge } = this.app.bajo.lib._
+  const { fs } = this.lib
+  const { merge } = this.lib._
 
   filter.page = 1
   batch = parseInt(batch) ?? 500

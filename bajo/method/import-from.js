@@ -10,8 +10,8 @@ const { json, ndjson, csv, xlsx } = format
 async function importFrom (source, dest, { trashOld = true, batch = 1, progressFn, converterFn, useHeader = true, fileType, createOpts = {} } = {}, opts = {}) {
   const { getPluginDataDir } = this.app.bajo
   const { recordCreate } = this.app.bajoDb
-  const { merge } = this.app.bajo.lib._
-  const { fs } = this.app.bajo.lib
+  const { merge } = this.lib._
+  const { fs } = this.lib
 
   if (dest !== false) this.app.bajoDb.getInfo(dest) // make sure dest coll is valid
   let file

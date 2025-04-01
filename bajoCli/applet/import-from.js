@@ -11,7 +11,7 @@ function makeProgress (spin) {
 
 async function importFrom (...args) {
   const { importPkg } = this.app.bajo
-  const { isEmpty, map } = this.app.bajo.lib._
+  const { isEmpty, map } = this.lib._
   const { getInfo, start } = this.app.bajoDb
 
   const [input, select, confirm] = await importPkg('bajoCli:@inquirer/input',

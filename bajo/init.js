@@ -3,7 +3,7 @@ const types = ['datetime', 'date', 'timestamp']
 async function handler ({ item }) {
   const { join } = this.app.bajo
   const { getSchema } = this.app.bajoDb
-  const { has } = this.app.bajo.lib._
+  const { has } = this.lib._
   for (const f of ['source', 'destination']) {
     if (!has(item, f)) throw this.error('Task must have %s collection', f)
     const key = `${f}Field`
